@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Neighborhood Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="js/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="js/lib/bootstrap.min.js"></script>
+    <script src="js/lib/knockout-3.4.2.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/map.js"></script>
+  </head>
+
+  <body>
+    <div id="map"></div>
+
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Dropdown
+      <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li data-bind="foreach: locList">
+          <a href="#" data-bind="text: title"></a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Replace the value of the key parameter with your own API key. -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3E5MtZUSNbycg1IDz4Gx4xa34Qtonfkc&callback=initMap" async defer></script>
+  </body>
+</html>

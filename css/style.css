@@ -1,0 +1,16 @@
+/* Always set the map height explicitly to define the size of the div
+ * element that contains the map. */
+
+html, body, #map {
+ height: 100%;
+ width: 100%;
+ z-index: 1;
+ position: absolute;
+}
+
+.dropdown {
+  z-index: 2;
+  position: absolute;
+  margin-top: 53px;
+  margin-left: 10px;
+}
