@@ -1,8 +1,6 @@
 var map;
 var bounds;
-var infoWindow;
-// Create a new blank array for all the listing markers.
-// var markers = [];
+var infowindow;
 
 function initMap() {
   // Constructor creates a new map - only center and zoom are required.
@@ -21,7 +19,19 @@ var LocationMarker = function(data) {
   var self = this;
   this.title = data.title;
   this.position = data.location;
+  this.street = '';
   this.visible = ko.observable(true);
+
+  var clientID = 'QO2OI54QLXB0F1FVRGYEM5DNSLMCBAKUYIMWVGKQ01F4X4AZ';
+  var clientSecret = 'LBSOM0BP1VNXUR2KMI0PUCSFZFDLLO1QTT3WHWLYL42SPHYM';
+  var reqURL = 'https://api.foursquare.com/v2/venues/search?ll=' + this.position.lat + ',' + this.position.lng + '&client_id=' + clientID + '&client_secret=' + clientSecret + '&v=20160118' + '&query=' + this.title;
+
+  $.getJSON(reqURL).done(function(data) {
+    var results = data.response.venues[0];
+    self.street = results.location.formattedAddress[0] ? results.location.formattedAddress[0]: 'N/A';
+  }).fail(function() {
+    alert('Foursquare出错了:D');
+  })
 
   // Create a marker per location, and put into markers array.
   this.marker = new google.maps.Marker({
@@ -43,7 +53,7 @@ var LocationMarker = function(data) {
   });
 
   this.marker.addListener('click', function() {
-    populateInfoWindow(this, infowindow);
+    populateInfoWindow(this, self.street, infowindow);
     toggleBounce(this);
   });
 
@@ -83,11 +93,12 @@ var ViewModel = function() {
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
 // on that markers position.
-function populateInfoWindow(marker, infowindow) {
+function populateInfoWindow(marker, street, infowindow) {
   // Check to make sure the infowindow is not already opened on this marker.
   if (infowindow.marker != marker) {
     infowindow.marker = marker;
-    infowindow.setContent('<div>' + marker.title + '</div>');
+    infowindow.setContent('<h4>' + marker.title + '</h4>' +
+                          '<p>' + street + '</p>');
     infowindow.open(map, marker);
     // Make sure the marker property is cleared if the infowindow is closed.
     infowindow.addListener('closeclick',function(){
@@ -107,7 +118,7 @@ function toggleBounce(marker) {
   }
 }
 
-// 错误处理
+// 谷歌地图错误处理
 function googleMapsError() {
-  alert('无法加载');
+  alert('谷歌地图出错了:D');
 }

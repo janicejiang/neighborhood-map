@@ -1,37 +1,37 @@
 var locations = [
   {
-    title: 'Beijing',
+    title: '慕田峪长城',
     location: {
-      lat: 39.9375348,
-      lng: 115.8370508
+      lat: 40.4241794,
+      lng: 116.5523701
     }
   },
   {
-    title: 'Shanghai',
+    title: '颐和园',
     location: {
-      lat: 31.2231339,
-      lng: 120.9163285
+      lat: 39.9970493,
+      lng: 116.2724797
     }
   },
   {
-    title: 'Shenzhen',
+    title: '景山公园',
     location: {
-      lat: 22.5549176,
-      lng: 113.7736945
+      lat: 39.926185,
+      lng: 116.387534
     }
   },
   {
-    title: 'Hangzhou',
+    title: '居庸关长城',
     location: {
-      lat: 30.2610923,
-      lng: 119.8917084
+      lat: 40.1703125,
+      lng: 116.2364331
     }
   },
   {
-    title: 'Chongqing',
+    title: '故宫（博物院)',
     location: {
-      lat: 29.5546186,
-      lng: 106.2683716
+      lat: 39.9143049,
+      lng: 116.3892227
     }
   }
 ];
