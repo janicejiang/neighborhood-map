@@ -8,9 +8,17 @@ html, body, #map {
  position: absolute;
 }
 
-.dropdown {
+input {
+  max-width: 104px;
   z-index: 2;
   position: absolute;
   margin-top: 53px;
+  margin-left: 10px;
+}
+
+.list-group {
+  z-index: 2;
+  position: absolute;
+  margin-top: 95px;
   margin-left: 10px;
 }

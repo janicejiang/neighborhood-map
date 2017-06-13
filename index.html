@@ -10,20 +10,16 @@
     <script src="js/lib/bootstrap.min.js"></script>
     <script src="js/lib/knockout-3.4.2.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/map.js"></script>
+    <script src="js/data.js"></script>
   </head>
 
   <body>
     <div id="map"></div>
 
-    <div class="dropdown">
-      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Dropdown
-      <span class="caret"></span></button>
-      <ul class="dropdown-menu">
-        <li data-bind="foreach: locList">
-          <a href="#" data-bind="text: title"></a>
-        </li>
-      </ul>
+    <input type="text" class="form-control" placeholder="Search" data-bind="textInput: searchItem, valueUpdate: 'afterkeydown'">
+
+    <div class="list-group" data-bind="foreach: locationList">
+      <button type="button" class="list-group-item" data-bind="text: title, click: show">重庆</button>
     </div>
 
     <!-- Replace the value of the key parameter with your own API key. -->

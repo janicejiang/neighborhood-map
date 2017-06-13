@@ -1,21 +1,113 @@
-var locations = [
-  {title: '北京', location: {lat: 39.9375348, lng: 115.8370508}},
-  {title: '上海', location: {lat: 31.2231339, lng: 120.9163285}},
-  {title: '深圳', location: {lat: 22.5549176, lng: 113.7736945}},
-  {title: '杭州', location: {lat: 30.2610923, lng: 119.8917084}},
-  {title: '重庆', location: {lat: 29.5546186, lng: 106.2683716}}
-];
+var map;
+var bounds;
+var infoWindow;
+// Create a new blank array for all the listing markers.
+// var markers = [];
 
-var Location = function(data) {
-  this.title = ko.observable(data.title);
-  this.location = ko.observable(data.location)
-};
+function initMap() {
+  // Constructor creates a new map - only center and zoom are required.
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 29.5546186, lng: 106.2683716},
+    zoom: 10
+  });
 
+  infowindow = new google.maps.InfoWindow();
+  bounds = new google.maps.LatLngBounds();
+  ko.applyBindings(new ViewModel);
+}
+
+// - - - - - - - - - - - - - - Location Model - - - - - - - - - - - - - - - //
+var LocationMarker = function(data) {
+  var self = this;
+  this.title = data.title;
+  this.position = data.location;
+  this.visible = ko.observable(true);
+
+  // Create a marker per location, and put into markers array.
+  this.marker = new google.maps.Marker({
+    map: this.map,
+    position: this.position,
+    title: this.title,
+    animation: google.maps.Animation.DROP,
+  });
+
+  self.filterMarkers = ko.computed(function() {
+    // show location list
+    if (self.visible() === true) {
+      self.marker.setMap(map);
+      bounds.extend(self.marker.position);
+      map.fitBounds(bounds);
+    } else {
+      self.marker.setMap(null);
+    }
+  });
+
+  this.marker.addListener('click', function() {
+    populateInfoWindow(this, infowindow);
+    toggleBounce(this);
+  });
+
+  this.show = function(location) {
+    google.maps.event.trigger(self.marker, 'click');
+  };
+}
+
+// - - - - - - - - - - - - - - View Model - - - - - - - - - - - - - - - //
 var ViewModel = function() {
   var self = this;
-  this.locList = ko.observableArray([]);
+  this.searchItem = ko.observable('');
+  this.mapList = ko.observableArray([]);
 
-  locations.forEach(function(loc) {
-    self.locList.push(new Location(loc));
+  // Push the marker to our array of markers
+  locations.forEach(function(location) {
+    self.mapList.push(new LocationMarker(location));
   });
+
+  this.locationList = ko.computed(function() {
+    var searchFilter = self.searchItem().toLowerCase();
+    if (searchFilter) {
+      return ko.utils.arrayFilter(self.mapList(), function(location) {
+        var str = location.title.toLowerCase();
+        var result = str.includes(searchFilter);
+        location.visible(result);
+        return result;
+      });
+    }
+    self.mapList().forEach(function(location) {
+      location.visible(true);
+    });
+    return self.mapList();
+  }, self);
 };
+
+// This function populates the infowindow when the marker is clicked. We'll only allow
+// one infowindow which will open at the marker that is clicked, and populate based
+// on that markers position.
+function populateInfoWindow(marker, infowindow) {
+  // Check to make sure the infowindow is not already opened on this marker.
+  if (infowindow.marker != marker) {
+    infowindow.marker = marker;
+    infowindow.setContent('<div>' + marker.title + '</div>');
+    infowindow.open(map, marker);
+    // Make sure the marker property is cleared if the infowindow is closed.
+    infowindow.addListener('closeclick',function(){
+      infowindow.setMarker = null;
+    });
+  }
+}
+
+function toggleBounce(marker) {
+  if (marker.getAnimation() !== null) {
+    marker.setAnimation(null);
+  } else {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function() {
+      marker.setAnimation(null);
+    }, 1400);
+  }
+}
+
+// 错误处理
+function googleMapsError() {
+  alert('无法加载');
+}
